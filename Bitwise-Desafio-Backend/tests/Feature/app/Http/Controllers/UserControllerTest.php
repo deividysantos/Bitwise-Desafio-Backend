@@ -3,27 +3,28 @@
 namespace Tests\Feature\app\Http\Controllers;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
 class UserControllerTest extends TestCase
 {
+    use RefreshDatabase;
+
     public function test_user_should_be_create()
     {
         $payload = [
-            'userName' => 'test',
+            'userName' => 'teste',
             'name' => 'test',
             'lastName' => 'test',
             'profileImageUrl' => 'https://avatars.githubusercontent.com/u/56976743?v=4',
             'bio' => 'testando o test',
             'email' => 'test@example.com',
-            'gender' => null
+            'gender' => 'male'
         ];
 
         $response = $this->withHeaders(['Accept', 'application/json'])
-            ->post('http://127.0.0.1:8000/api/user', $payload);
+            ->post(Route('user.create'), $payload);
 
-        $response->assertStatus(201);
+
         $response->assertExactJson([
             'message' => 'User created successfully!'
         ]);
@@ -32,12 +33,12 @@ class UserControllerTest extends TestCase
     public function test_user_should_be_create_without_fields_required()
     {
         $payload = [
-            'name' => 'test',
+            'name' => 'teste',
             'email' => 'test@example.com',
         ];
 
         $response = $this->withHeaders(['Accept', 'application/json'])
-            ->post('http://127.0.0.1:8000/api/user', $payload);
+            ->post(Route('user.create'), $payload);
 
         $response->assertStatus(201);
         $response->assertExactJson([
@@ -52,42 +53,59 @@ class UserControllerTest extends TestCase
         ];
 
         $response = $this->withHeaders(['Accept', 'application/json'])
-            ->post('http://127.0.0.1:8000/api/user', $payload);
+            ->post(Route('user.create'), $payload);
 
         $response->assertStatus(400);
         $response->assertExactJson([
-            'message' => 'Missing required field: name'
+            'details' => [
+                'name' =>[
+                    'The name field is required.'
+                ]
+        ],
+            'message' => 'Invalid data send'
         ]);
     }
 
     public function test_user_should_not_be_created_when_not_send_email()
     {
         $payload = [
-            'name' => 'test',
+            'name' => 'teste',
         ];
 
         $response = $this->withHeaders(['Accept', 'application/json'])
-            ->post('http://127.0.0.1:8000/api/user', $payload);
+            ->post(Route('user.create'), $payload);
 
         $response->assertStatus(400);
         $response->assertExactJson([
-            'message' => 'Missing required field: email'
+
+    'details' => [
+        'email' => [
+            'The email field is required.'
+        ]
+    ],
+    'message' => 'Invalid data send'
         ]);
     }
 
     public function test_email_should_be_a_valid_email()
     {
         $payload = [
-            'name' => 'test',
+            'name' => 'teste',
             'email' => 'test',
         ];
 
         $response = $this->withHeaders(['Accept', 'application/json'])
-            ->post('http://127.0.0.1:8000/api/user', $payload);
+            ->post(Route('user.create'), $payload);
 
         $response->assertStatus(400);
         $response->assertExactJson([
-            'message' => 'The field email not is valid'
+
+            'details' => [
+                'email' => [
+                    'The email must be a valid email address.'
+                ]
+            ],
+            'message' => 'Invalid data send'
         ]);
     }
 
@@ -99,30 +117,46 @@ class UserControllerTest extends TestCase
         ];
 
         $response = $this->withHeaders(['Accept', 'application/json'])
-            ->post('http://127.0.0.1:8000/api/user', $payload);
+            ->post(Route('user.create'), $payload);
 
         $response->assertStatus(400);
         $response->assertExactJson([
-            'message' => 'The name field is great!'
+            'details' => [
+                'email' => [
+                    'The email must be a valid email address.'
+                ],
+                'name' => [
+                    'The name must not be greater than 30 characters.'
+                ]
+            ],
+            'message' => 'Invalid data send'
         ]);
     }
 
     public function test_email_should_be_unique()
     {
         $payload = [
-            'name' => 'test',
+            'name' => 'teste',
             'email' => 'test@example.com',
         ];
 
         $this->withHeaders(['Accept', 'application/json'])
-            ->post('http://127.0.0.1:8000/api/user', $payload);
+            ->post(Route('user.create'), $payload);
 
         $response = $this->withHeaders(['Accept', 'application/json'])
-            ->post('http://127.0.0.1:8000/api/user', $payload);
+            ->post(Route('user.create'), $payload);
 
         $response->assertStatus(400);
         $response->assertExactJson([
-            'message' => 'Email already used!'
+
+            'details' => [
+                'email' => [
+                    'The email has already been taken.'
+                ]
+            ],
+            'message' => 'Invalid data send'
+
         ]);
+
     }
 }
