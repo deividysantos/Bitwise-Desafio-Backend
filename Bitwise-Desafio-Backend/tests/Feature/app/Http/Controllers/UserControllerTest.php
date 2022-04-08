@@ -12,11 +12,11 @@ class UserControllerTest extends TestCase
     public function test_user_should_be_create()
     {
         $payload = [
-            'userName' => 'teste',
+            'userName' => 'user name',
             'name' => 'test',
             'lastName' => 'test',
             'profileImageUrl' => 'https://avatars.githubusercontent.com/u/56976743?v=4',
-            'bio' => 'testando o test',
+            'bio' => 'I am a test',
             'email' => 'test@example.com',
             'gender' => 'male'
         ];
