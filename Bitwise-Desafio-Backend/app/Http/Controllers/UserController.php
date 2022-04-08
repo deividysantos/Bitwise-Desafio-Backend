@@ -15,10 +15,13 @@ class UserController extends Controller
 
     public function create(CreateRequest $request): JsonResponse
     {
-        $this->repository->create($request->validated());
+        if( $this->repository->create($request->validated()) )
+            return response()->json([
+                'message' => 'User created successfully!'
+            ], 201);
 
         return response()->json([
-            'message' => 'User created successfully!'
-        ], 201);
+            'message' => 'Creation failure!'
+        ], 500);
     }
 }
