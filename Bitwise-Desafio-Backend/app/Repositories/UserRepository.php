@@ -17,13 +17,33 @@ class UserRepository
         return $this->user->query()->create($payload);
     }
 
-    public function exists(string $username): bool
+    public function existsByUserName(string $username): Model|bool
     {
         $user = $this->user
             ->query()
             ->where('username', $username)
             ->first();
 
-        return $user !== null;
+        if ($user !== null)
+        {
+            return $user;
+        }
+
+        return false;
+    }
+
+    public function existsByEmail(string $email): Model|bool
+    {
+        $user = $this->user
+            ->query()
+            ->where('email', $email)
+            ->first();
+
+        if ($user !== null)
+        {
+            return $user;
+        }
+
+        return false;
     }
 }

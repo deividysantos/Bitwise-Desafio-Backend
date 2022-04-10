@@ -30,12 +30,12 @@ class UserController extends Controller
 
     public function createByGithub(CreateByGithubRequest $request): JsonResponse
     {
-        if($this->userRepository->exists($request['userName']))
+        if($this->userRepository->existsByUserName($request['userName']))
             return response()->json([
                 'message' => 'User already created.'
             ], 404);
 
-        if(! $this->githubService->userNameExists($request['userName']))
+        if(! $this->githubService->existsByUserName($request['userName']))
             return response()->json([
                 'message' => 'Username not found in github.'
             ], 404);
@@ -59,5 +59,42 @@ class UserController extends Controller
             'message' => 'User created successfully!',
             'data' => $payload
         ], 201);
+    }
+
+    public function getByUserName(string $userName): JsonResponse
+    {
+        if(!$this->userRepository->existsByUserName($userName))
+            return response()->json([
+                'message' => 'User not exists!'
+            ]);
+
+        return response()->json([
+           'message' => 'User found successfully.',
+           'data' => $this->formatResponseDataToSearchByUserName($userName)
+        ]);
+    }
+
+    public function getByEmail(string $email): JsonResponse
+    {
+        $exists = $this->userRepository->existsByEmail($email);
+
+        if(!$exists)
+            return response()->json([
+                'message' => 'User not exists!'
+            ]);
+
+        return response()->json([
+           'message' => 'User found successfully.',
+           'data' => $this->formatResponseDataToSearchByUserName($exists->userName)
+        ]);
+    }
+
+    private function formatResponseDataToSearchByUserName(string $userName): array
+    {
+        $infosDataBase = $this->userRepository->existsByUserName($userName);
+
+        $additionalInfosByGitHub = $this->githubService->getAdditionalInformationsByUserName($userName);
+
+        return array_merge((array) $infosDataBase, $additionalInfosByGitHub);
     }
 }

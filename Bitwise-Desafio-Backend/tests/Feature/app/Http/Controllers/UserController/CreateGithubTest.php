@@ -1,10 +1,10 @@
 <?php
 
-namespace Tests\Feature\app\Http\Controllers\Controllers\UserController;
+namespace Tests\Feature\app\Http\Controllers\UserController;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
+use function route;
 
 class CreateGithubTest extends TestCase
 {

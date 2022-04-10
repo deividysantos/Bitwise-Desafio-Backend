@@ -11,10 +11,10 @@ class GithubService
     {
         $data = $this->getData($payload['userName']);
 
-        return $this->formatData($data, $payload);
+        return $this->formatDataToDataBase($data, $payload);
     }
 
-    public function userNameExists(string $userName): bool
+    public function existsByUserName(string $userName): bool
     {
         $data = $this->getData($userName);
 
@@ -30,21 +30,33 @@ class GithubService
         return $response->json();
     }
 
-    private function formatData(array $data, array $payload): array
+    private function formatDataToDataBase(array $dataByGitHub, array $payloadRequest): array
     {
-        $fullName = explode(' ',$data['name']);
+        $fullName = explode(' ',$dataByGitHub['name']);
 
         $name = $fullName[0];
         $lastName = $fullName[count($fullName) - 1];
 
         return [
-            'userName' => $data['login'],
+            'userName' => $dataByGitHub['login'],
             'name' => $name,
             'lastName' =>  $lastName,
-            'profileImageUrl' => $data['avatar_url'],
-            'bio' => $data['bio'],
-            'email' => $payload['email'],
-            'gender' => $payload['gender'],
+            'profileImageUrl' => $dataByGitHub['avatar_url'],
+            'bio' => $dataByGitHub['bio'],
+            'email' => $payloadRequest['email'],
+            'gender' => $payloadRequest['gender'],
+        ];
+    }
+
+    public function getAdditionalInformationsByUserName(string $userName)
+    {
+        $data = $this->getData($userName);
+
+        return [
+            'followers' => $data['followers'],
+            'following' => $data['following'],
+            'public_repos' => $data['public_repos'],
+            'url' => $data['url'],
         ];
     }
 }
