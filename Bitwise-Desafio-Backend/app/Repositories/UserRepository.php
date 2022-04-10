@@ -7,8 +7,23 @@ use Illuminate\Database\Eloquent\Model;
 
 class UserRepository
 {
+
+    public function __construct(
+        private User $user
+    ) {}
+
     public function create($payload): Model
     {
-        return User::query()->create($payload);
+        return $this->user->query()->create($payload);
+    }
+
+    public function exists(string $username): bool
+    {
+        $user = $this->user
+            ->query()
+            ->where('username', $username)
+            ->first();
+
+        return $user !== null;
     }
 }

@@ -1,11 +1,12 @@
 <?php
 
-namespace Tests\Feature\app\Http\Controllers;
+namespace Tests\Feature\app\Http\Controllers\Controllers\UserController;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
+use function route;
 
-class UserControllerTest extends TestCase
+class CreateTest extends TestCase
 {
     use RefreshDatabase;
 

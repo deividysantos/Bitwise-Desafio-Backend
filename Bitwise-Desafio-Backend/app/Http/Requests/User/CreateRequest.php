@@ -3,6 +3,8 @@
 namespace App\Http\Requests\User;
 
 use App\Models\Enums\Gender;
+use App\Rules\Alphanumeric;
+use App\Rules\JustLetters;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
@@ -25,15 +27,15 @@ class CreateRequest extends FormRequest
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         return [
-            'userName' => ['string', 'min:5', 'max:30', 'unique:users', 'nullable'],
-            'name' => ['required', 'min:3', 'max:30'],
-            'lastName' => ['min:3', 'max:30', 'nullable'],
+            'userName' => ['string', 'min:5', 'max:30', 'unique:users,userName', 'nullable', new Alphanumeric],
+            'name' => ['required', 'min:3', 'max:30', new JustLetters],
+            'lastName' => ['min:3', 'max:30', 'nullable', new JustLetters],
             'profileImageUrl' => ['nullable', 'url'],
-            'bio' => ['nullable', 'min:3', 'max:30'],
-            'email' => ['required', 'unique:users', 'email'],
+            'bio' => ['nullable', 'min:3', 'max:30', new JustLetters],
+            'email' => ['required', 'unique:users,email', 'email'],
             'gender' => [new Enum(Gender::class), 'nullable']
         ];
     }

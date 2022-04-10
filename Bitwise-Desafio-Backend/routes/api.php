@@ -21,3 +21,6 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::post('/user', [UserController::class, 'create'])
     ->name('user.create');
+
+Route::post('/user/github/', [UserController::class, 'createByGithub'])
+    ->name('user.createByGithub');
