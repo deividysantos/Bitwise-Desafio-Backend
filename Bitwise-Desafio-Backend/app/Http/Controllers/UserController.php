@@ -93,8 +93,12 @@ class UserController extends Controller
     {
         $infosDataBase = $this->userRepository->existsByUserName($userName);
 
-        $additionalInfosByGitHub = $this->githubService->getAdditionalInformationsByUserName($userName);
+        if($this->githubService->existsByUserName($userName))
+        {
+            $additionalInfosByGitHub = $this->githubService->getAdditionalInformationsByUserName($userName);
+            return array_merge((array) $infosDataBase, $additionalInfosByGitHub);
+        }
 
-        return array_merge((array) $infosDataBase, $additionalInfosByGitHub);
+        return (array) $infosDataBase;
     }
 }
