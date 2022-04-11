@@ -2,7 +2,7 @@
 
 namespace App\Providers;
 
-use App\Events\NameUserUpdated;
+use App\Events\NeedsUpdateGithubInfos;
 use App\Listeners\UpdateDataFromGithub;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
@@ -20,7 +20,7 @@ class EventServiceProvider extends ServiceProvider
         Registered::class => [
             SendEmailVerificationNotification::class,
         ],
-        NameUserUpdated::class => [
+        NeedsUpdateGithubInfos::class => [
             UpdateDataFromGithub::class
         ]
     ];

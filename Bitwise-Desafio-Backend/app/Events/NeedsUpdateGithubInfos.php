@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class NameUserUpdated
+class NeedsUpdateGithubInfos
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 

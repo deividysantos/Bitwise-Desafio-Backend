@@ -2,7 +2,7 @@
 
 namespace App\Listeners;
 
-use App\Events\NameUserUpdated;
+use App\Events\NeedsUpdateGithubInfos;
 use App\Services\GithubService;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
@@ -20,10 +20,10 @@ class UpdateDataFromGithub implements ShouldQueue
     /**
      * Handle the event.
      *
-     * @param  NameUserUpdated  $event
+     * @param  NeedsUpdateGithubInfos  $event
      * @return void
      */
-    public function handle(NameUserUpdated $event)
+    public function handle(NeedsUpdateGithubInfos $event)
     {
         $newUser = $this->githubService->getByUserName($event->user->userName);
 

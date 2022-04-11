@@ -22,3 +22,6 @@ Route::get('/users', [UserController::class, 'getAll'])
 
 Route::patch('/user', [UserController::class, 'update'])
     ->name('user.update');
+
+Route::patch('/user/github/{userName}', [UserController::class, 'updateGithubInfos'])
+    ->name('user.updateGithub');

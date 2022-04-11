@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Events\NameUserUpdated;
+use App\Events\NeedsUpdateGithubInfos;
 use App\Http\Requests\User\CreateByGithubRequest;
 use App\Http\Requests\User\CreateRequest;
 use App\Http\Requests\User\UpdateRequest;
@@ -136,10 +136,24 @@ class UserController extends Controller
         $user->update($request->validated()['data']);
 
         if(!$user->userName->wasChenged())
-            NameUserUpdated::dispatch($user);
+            NeedsUpdateGithubInfos::dispatch($user);
 
         return response()->json([
             'message' => 'Data updated successfully.'
         ]);
+    }
+
+    public function updateGithubInfos(string $userName): JsonResponse
+    {
+        $user = $this->userRepository->existsByUserName($userName);
+
+        if(!$user)
+            return response()->json([
+                'message' => 'User not found'
+            ], 404);
+
+        NeedsUpdateGithubInfos::dispatch($user);
+
+        return response()->json();
     }
 }
