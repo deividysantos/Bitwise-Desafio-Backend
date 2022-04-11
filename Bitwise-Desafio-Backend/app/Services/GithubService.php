@@ -7,11 +7,9 @@ use Illuminate\Support\Facades\Http;
 
 class GithubService
 {
-    public function getByUserName(array $payload): array
+    public function getByUserName(string $userName): array
     {
-        $data = $this->getData($payload['userName']);
-
-        return $this->formatDataToDataBase($data, $payload);
+        return $this->getData($userName);
     }
 
     public function existsByUserName(string $userName): bool
@@ -30,7 +28,7 @@ class GithubService
         return $response->json();
     }
 
-    private function formatDataToDataBase(array $dataByGitHub, array $payloadRequest): array
+    public function formatDataToDataBase(array $dataByGitHub, array $payloadRequest): array
     {
         $fullName = explode(' ',$dataByGitHub['name']);
 

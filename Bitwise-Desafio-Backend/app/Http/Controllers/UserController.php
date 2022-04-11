@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\NameUserUpdated;
 use App\Http\Requests\User\CreateByGithubRequest;
 use App\Http\Requests\User\CreateRequest;
+use App\Http\Requests\User\UpdateRequest;
 use App\Repositories\UserRepository;
 use App\Services\GithubService;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Log;
 
@@ -40,7 +43,9 @@ class UserController extends Controller
                 'message' => 'Username not found in github.'
             ], 404);
 
-        $payload = $this->githubService->getByUserName($request->validated());
+        $data = $this->githubService->getByUserName($request['userName']);
+
+        $payload = $this->githubService->formatDataToDataBase($data, $request->validated());
 
         try{
 
@@ -107,6 +112,34 @@ class UserController extends Controller
         return response()->json([
             'message' => 'Successfully.',
             $this->userRepository->getAll()
+        ]);
+    }
+
+    public function update(UpdateRequest $request)
+    {
+        $user = $this->userRepository->existsByUserName($request['userName']);
+
+        if(!$user)
+            return response()->json([
+               'message' => 'User not found'
+            ], 404);
+
+        if(
+            isset($request['data']['userName']) &&
+            !$this->githubService->existsByUserName($request['data']['userName'])
+        )
+            return response()->json([
+                'message' => 'This new user name not exists in github.'
+            ], 404);
+
+
+        $user->update($request->validated()['data']);
+
+        if(!$user->userName->wasChenged())
+            NameUserUpdated::dispatch($user);
+
+        return response()->json([
+            'message' => 'Data updated successfully.'
         ]);
     }
 }

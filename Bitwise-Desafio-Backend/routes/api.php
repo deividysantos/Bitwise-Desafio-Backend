@@ -19,3 +19,6 @@ Route::get('/user/email/{email}', [UserController::class, 'getByEmail'])
 
 Route::get('/users', [UserController::class, 'getAll'])
     ->name('user.getAll');
+
+Route::patch('/user', [UserController::class, 'update'])
+    ->name('user.update');
