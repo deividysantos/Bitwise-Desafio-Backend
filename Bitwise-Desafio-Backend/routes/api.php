@@ -16,3 +16,6 @@ Route::get('/user/username/{userName}', [UserController::class, 'getByUserName']
 
 Route::get('/user/email/{email}', [UserController::class, 'getByEmail'])
     ->name('user.getByEmail');
+
+Route::get('/users', [UserController::class, 'getAll'])
+    ->name('user.getAll');

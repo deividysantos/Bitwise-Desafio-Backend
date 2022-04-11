@@ -101,4 +101,12 @@ class UserController extends Controller
 
         return (array) $infosDataBase;
     }
+
+    public function getAll(): JsonResponse
+    {
+        return response()->json([
+            'message' => 'Successfully.',
+            $this->userRepository->getAll()
+        ]);
+    }
 }

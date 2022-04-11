@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use App\Models\User;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Model;
 
 class UserRepository
@@ -45,5 +46,10 @@ class UserRepository
         }
 
         return false;
+    }
+
+    public function getAll(): LengthAwarePaginator
+    {
+        return $this->user->query()->paginate(15);
     }
 }
